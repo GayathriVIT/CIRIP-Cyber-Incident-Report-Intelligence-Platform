@@ -1,0 +1,99 @@
+[
+  {
+    "campaign_id": "camp-002",
+    "name": "Campaign Gamma",
+    "threat_level": "Critical",
+    "incident_ids": [
+      "0fb1b6df-a3e5-417c-a7b0-2406b48540f0",
+      "6896fb94-6d23-46cd-9cff-1984d02a074b",
+      "6fdd0d64-4e26-4b66-a3b4-ef44c29e08ac",
+      "8b3defb3-9b4a-4038-9d03-b4e38c963661"
+    ],
+    "incident_count": 4,
+    "common_iocs": {
+      "domains": [
+        "evil-host.xyz"
+      ],
+      "ip_addresses": [
+        "194.26.29.11"
+      ],
+      "urls": [],
+      "file_hashes": [
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "44d88612fea8a8f36de82e1278abb02f"
+      ],
+      "cves": [
+        "cve-2023-34362"
+      ],
+      "malware_families": [
+        "lockbit"
+      ]
+    },
+    "first_detected": "2026-09-19T17:46:05.385942+00:00",
+    "last_activity": "2026-10-31T02:54:47.147070+00:00",
+    "source": "campaign detection engine (IoC correlation clustering)"
+  },
+  {
+    "campaign_id": "camp-001",
+    "name": "Campaign Beta",
+    "threat_level": "Medium",
+    "incident_ids": [
+      "31b7e5b7-2e8d-45a6-8e51-626ba2de7e00",
+      "5860d03f-65d9-421f-92cf-7b603096ba9b",
+      "5c37fe2b-4cc7-482f-807a-fb17b91e3168",
+      "63bc39f8-2b33-4ea6-bd1a-08cc16a3efc6",
+      "a47e74f8-5e72-4a8b-8181-dd2d9377855f",
+      "c1333024-f24d-4748-962b-a65094d4e643"
+    ],
+    "incident_count": 6,
+    "common_iocs": {
+      "domains": [
+        "malicious-login-example.com"
+      ],
+      "ip_addresses": [
+        "185.199.108.153"
+      ],
+      "urls": [],
+      "file_hashes": [],
+      "cves": [
+        "cve-2024-1234"
+      ],
+      "malware_families": [
+        "lockbit"
+      ]
+    },
+    "first_detected": "2026-08-23T07:58:23.691135+00:00",
+    "last_activity": "2026-10-30T09:09:41.078015+00:00",
+    "source": "campaign detection engine (IoC correlation clustering)"
+  },
+  {
+    "campaign_id": "camp-000",
+    "name": "Campaign Alpha",
+    "threat_level": "Medium",
+    "incident_ids": [
+      "04b794c1-10d2-4179-afe2-e61d7d742d3a",
+      "073aa94a-b7d8-47a2-aded-11179142f36a",
+      "46c3d094-1c7d-4702-984e-2c7c760729b0",
+      "7b086d96-4648-40a9-852e-bd4d2912728c",
+      "c88495fd-2e82-44b7-828c-8d5ec960970b"
+    ],
+    "incident_count": 5,
+    "common_iocs": {
+      "domains": [
+        "malicious-bank-example.com"
+      ],
+      "ip_addresses": [
+        "192.168.10.25"
+      ],
+      "urls": [],
+      "file_hashes": [],
+      "cves": [],
+      "malware_families": [
+        "zeus"
+      ]
+    },
+    "first_detected": "2026-08-25T15:34:28.891453+00:00",
+    "last_activity": "2026-10-14T04:45:29.076015+00:00",
+    "source": "campaign detection engine (IoC correlation clustering)"
+  }
+]

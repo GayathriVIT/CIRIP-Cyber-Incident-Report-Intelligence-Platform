@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CIRIP — AI-Powered Cyber Threat Fusion & Intelligence Platform</title>
+<meta name="description" content="CIRIP: AI-Powered Cyber Threat Fusion and Intelligence Platform. Analyze, correlate, and visualize cyber incidents with ML-driven insights." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/vis-network@9.1.9/standalone/umd/vis-network.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- ══ SIDEBAR ══════════════════════════════════════════════════════════ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-brand">
+        <div class="sidebar-logo">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+            <polygon points="14,2 26,8 26,20 14,26 2,20 2,8" fill="none" stroke="#3B82F6" stroke-width="1.5"/>
+            <polygon points="14,6 22,10 22,18 14,22 6,18 6,10" fill="none" stroke="#22D3EE" stroke-width="1"/>
+            <circle cx="14" cy="14" r="4" fill="#3B82F6"/>
+          </svg>
+        </div>
+        <div class="sidebar-brand-text">
+          <div class="sidebar-name">CIRIP</div>
+          <div class="sidebar-tagline">Threat Fusion Platform</div>
+        </div>
+      </div>
+      <button class="sidebar-toggle" id="sidebarToggle" title="Collapse sidebar">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-group">
+        <div class="nav-group-label">Operations</div>
+        <button class="nav-item active" data-view="command" id="nav-command">
+          <span class="nav-icon">🛡</span>
+          <span class="nav-label">Threat Command Center</span>
+          <span class="nav-active-bar"></span>
+        </button>
+        <button class="nav-item" data-view="dashboard" id="nav-dashboard">
+          <span class="nav-icon">📊</span>
+          <span class="nav-label">Intelligence Dashboard</span>
+          <span class="nav-active-bar"></span>
+        </button>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-group-label">Analysis</div>
+        <button class="nav-item" data-view="analyze" id="nav-analyze">
+          <span class="nav-icon">🔍</span>
+          <span class="nav-label">Analyze Threat</span>
+          <span class="nav-active-bar"></span>
+        </button>
+        <button class="nav-item" data-view="graph" id="nav-graph">
+          <span class="nav-icon">🕸</span>
+          <span class="nav-label">Threat Graph</span>
+          <span class="nav-active-bar"></span>
+        </button>
+        <button class="nav-item" data-view="storyline" id="nav-storyline">
+          <span class="nav-icon">⚡</span>
+          <span class="nav-label">Attack Storyline</span>
+          <span class="nav-active-bar"></span>
+        </button>
+        <button class="nav-item" data-view="campaigns" id="nav-campaigns">
+          <span class="nav-icon">🎯</span>
+          <span class="nav-label">Threat Campaigns</span>
+          <span class="nav-active-bar"></span>
+        </button>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-group-label">Intelligence</div>
+        <button class="nav-item" data-view="history" id="nav-history">
+          <span class="nav-icon">📜</span>
+          <span class="nav-label">Incident History</span>
+          <span class="nav-active-bar"></span>
+        </button>
+        <button class="nav-item" data-view="reports" id="nav-reports">
+          <span class="nav-icon">📄</span>
+          <span class="nav-label">Intelligence Reports</span>
+          <span class="nav-active-bar"></span>
+        </button>
+        <button class="nav-item" data-view="evaluation" id="nav-evaluation">
+          <span class="nav-icon">📈</span>
+          <span class="nav-label">Model Performance &amp; Evaluation</span>
+          <span class="nav-active-bar"></span>
+        </button>
+        <button class="nav-item" data-view="settings" id="nav-settings">
+          <span class="nav-icon">⚙</span>
+          <span class="nav-label">System Settings</span>
+          <span class="nav-active-bar"></span>
+        </button>
+      </div>
+    </nav>
+
+    <div class="sidebar-status">
+      <div class="status-dot" id="statusDot"></div>
+      <div class="status-text">
+        <div class="status-label" id="statusLabel">Connecting…</div>
+        <div class="status-sub" id="statusSub">CIRIP v2.0</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ══ MAIN CONTENT ══════════════════════════════════════════════════════ -->
+  <main class="main-content" id="mainContent">
+
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="topbar-menu-btn" id="topbarMenuBtn">☰</button>
+        <div class="topbar-breadcrumb" id="topbarBreadcrumb">Threat Command Center</div>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-badge" id="systemBadge">● SYSTEM MONITORING ACTIVE</div>
+        <div class="topbar-time" id="topbarTime"></div>
+      </div>
+    </header>
+
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <!-- VIEW: THREAT COMMAND CENTER                                       -->
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <section class="view active" id="view-command">
+      <div class="view-header">
+        <h1 class="view-title">Threat Command Center</h1>
+        <p class="view-subtitle">Real-time cyber incident intelligence overview</p>
+      </div>
+
+      <div class="stat-grid" id="commandStats">
+        <div class="stat-card" id="stat-total">
+          <div class="stat-icon">🗂</div>
+          <div class="stat-body">
+            <div class="stat-value" id="cmdTotalIncidents">—</div>
+            <div class="stat-label">Total Incidents</div>
+          </div>
+          <div class="stat-glow"></div>
+        </div>
+        <div class="stat-card accent-campaign" id="stat-campaigns">
+          <div class="stat-icon">🎯</div>
+          <div class="stat-body">
+            <div class="stat-value" id="cmdActiveCampaigns">—</div>
+            <div class="stat-label">Active Campaigns</div>
+          </div>
+          <div class="stat-glow"></div>
+        </div>
+        <div class="stat-card accent-critical" id="stat-critical">
+          <div class="stat-icon">🚨</div>
+          <div class="stat-body">
+            <div class="stat-value" id="cmdCriticalThreats">—</div>
+            <div class="stat-label">Critical Threats</div>
+          </div>
+          <div class="stat-glow"></div>
+        </div>
+        <div class="stat-card accent-ioc" id="stat-iocs">
+          <div class="stat-icon">🔗</div>
+          <div class="stat-body">
+            <div class="stat-value" id="cmdHighRiskIocs">—</div>
+            <div class="stat-label">High-Risk IoCs</div>
+          </div>
+          <div class="stat-glow"></div>
+        </div>
+        <div class="stat-card accent-score" id="stat-score">
+          <div class="stat-icon">📈</div>
+          <div class="stat-body">
+            <div class="stat-value" id="cmdAvgScore">—</div>
+            <div class="stat-label">Avg Threat Score</div>
+          </div>
+          <div class="stat-glow"></div>
+        </div>
+      </div>
+
+      <div class="command-grid">
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Recent Threat Activity</h3>
+            <button class="btn-ghost btn-sm" onclick="navigateTo('analyze')">+ New Analysis</button>
+          </div>
+          <div id="recentActivity" class="activity-feed"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h3>Severity Distribution</h3></div>
+          <canvas id="cmdSeverityChart" height="200"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <!-- VIEW: INTELLIGENCE DASHBOARD                                       -->
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <section class="view" id="view-dashboard">
+      <div class="view-header">
+        <h1 class="view-title">Intelligence Dashboard</h1>
+        <p class="view-subtitle">Aggregated threat intelligence across all analyzed incidents</p>
+      </div>
+
+      <div class="dashboard-grid">
+        <div class="panel">
+          <div class="panel-head"><h3>Incident Type Distribution</h3></div>
+          <canvas id="typeChart" height="220"></canvas>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h3>Severity Distribution</h3></div>
+          <canvas id="severityChart" height="220"></canvas>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h3>Threat Score Distribution</h3></div>
+          <canvas id="scoreDistChart" height="220"></canvas>
+        </div>
+      </div>
+
+      <!-- Model Performance & Evaluation Entry Card -->
+      <div class="panel eval-banner-panel" style="margin-top:16px;">
+        <div class="panel-head" style="margin-bottom:0;">
+          <div class="eval-banner-left">
+            <div class="eval-banner-icon">📈</div>
+            <div>
+              <h3>Model Performance &amp; Evaluation</h3>
+              <p class="panel-note">Empirical holdout vs. independent benchmark results (18 reports), macro F1 metrics, and ML algorithm comparisons.</p>
+            </div>
+          </div>
+          <button class="btn-primary btn-sm" onclick="navigateTo('evaluation')">Open Model Evaluation ↗</button>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-top:16px;">
+        <div class="panel-head">
+          <h3>Incident Activity Timeline</h3>
+        </div>
+        <div id="dashTimeline" class="dash-timeline"></div>
+      </div>
+
+      <div class="panel" style="margin-top:16px;">
+        <div class="panel-head">
+          <h3>Combined Threat Knowledge Graph</h3>
+          <div class="graph-controls">
+            <button class="btn-ghost btn-sm" id="dashGraphFit">Fit View</button>
+            <button class="btn-ghost btn-sm" id="dashGraphFullscreen">⛶ Fullscreen</button>
+          </div>
+        </div>
+        <div id="dashGraphContainer" class="graph-container tall"></div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <!-- VIEW: ANALYZE THREAT                                               -->
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <section class="view" id="view-analyze">
+      <div class="view-header">
+        <h1 class="view-title">Analyze Threat</h1>
+        <p class="view-subtitle">Submit an incident report for AI-powered threat analysis</p>
+      </div>
+
+      <div class="analyze-layout">
+        <!-- Input Panel -->
+        <div class="panel input-panel">
+          <div class="panel-head">
+            <h3>Incident Report Input</h3>
+            <span class="src-tag rule">Multi-source</span>
+          </div>
+
+          <!-- Source tabs -->
+          <div class="source-tabs">
+            <button class="source-tab active" data-source="paste">📋 Paste Text</button>
+            <button class="source-tab" data-source="email">📧 Email</button>
+            <button class="source-tab" data-source="message">💬 Message</button>
+            <button class="source-tab" data-source="report">📄 Security Report</button>
+          </div>
+
+          <input id="incidentTitle" class="text-input" type="text" placeholder="Incident title (optional)" />
+          <textarea id="incidentText" class="textarea-input" rows="10" placeholder="Paste your incident report, SOC notes, SIEM alert, email, or threat feed here…"></textarea>
+
+          <!-- Drag-drop zone -->
+          <div class="drop-zone" id="dropZone">
+            <div class="drop-zone-inner">
+              <div class="drop-icon">📁</div>
+              <div class="drop-text">Drag & drop file analysis</div>
+              <div class="drop-sub">Coming Soon — File parsing not yet implemented</div>
+            </div>
+          </div>
+
+          <div class="input-actions">
+            <label class="llm-toggle">
+              <input type="checkbox" id="useLlm" />
+              <span class="toggle-slider"></span>
+              <span>LLM enrichment (requires server-side API key)</span>
+            </label>
+            <button class="btn-primary btn-analyze" id="analyzeBtn">
+              <span class="btn-icon">⚡</span>
+              Analyze Threat
+            </button>
+          </div>
+
+          <!-- Pipeline trace animation -->
+          <div class="pipeline-trace" id="pipelineTrace">
+            <div class="trace-title">Analysis Pipeline</div>
+            <div class="trace-steps">
+              <div class="trace-step" data-step="1"><span class="trace-dot"></span><span class="trace-label">Input Received</span></div>
+              <div class="trace-step" data-step="2"><span class="trace-dot"></span><span class="trace-label">Text Normalization</span></div>
+              <div class="trace-step" data-step="3"><span class="trace-dot"></span><span class="trace-label">NLP Entity Extraction</span></div>
+              <div class="trace-step" data-step="4"><span class="trace-dot"></span><span class="trace-label">IoC Detection</span></div>
+              <div class="trace-step" data-step="5"><span class="trace-dot"></span><span class="trace-label">ML Classification</span></div>
+              <div class="trace-step" data-step="6"><span class="trace-dot"></span><span class="trace-label">Severity Assessment</span></div>
+              <div class="trace-step" data-step="7"><span class="trace-dot"></span><span class="trace-label">Threat Correlation</span></div>
+              <div class="trace-step" data-step="8"><span class="trace-dot"></span><span class="trace-label">Knowledge Graph</span></div>
+              <div class="trace-step" data-step="9"><span class="trace-dot"></span><span class="trace-label">Threat Score Calc</span></div>
+              <div class="trace-step" data-step="10"><span class="trace-dot"></span><span class="trace-label">Intelligence Report</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Results Area -->
+        <div id="resultsArea" class="results-area hidden">
+
+          <!-- Language Intelligence Panel -->
+          <div class="panel hidden" id="languagePanel">
+            <div class="panel-head">
+              <h3>Language Intelligence <span class="src-tag ml">AI Detected</span></h3>
+              <div class="lang-badge" id="langBadge">—</div>
+            </div>
+            <div class="lang-content-grid">
+              <div class="lang-col">
+                <h4>Original Text</h4>
+                <div class="lang-text-box" id="langOriginalText">—</div>
+              </div>
+              <div class="lang-col">
+                <h4>Processed Text (English) <span class="src-tag ml" id="langActionTag">Translated</span></h4>
+                <div class="lang-text-box" id="langTranslatedText">—</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Top metrics row -->
+          <div class="result-metrics-row">
+            <!-- Threat Score Gauge -->
+            <div class="panel score-panel">
+              <div class="panel-head"><h3>Threat Score</h3></div>
+              <div class="score-gauge-wrap">
+                <div class="score-gauge" id="scoreGauge">
+                  <svg class="gauge-svg" viewBox="0 0 200 200">
+                    <circle class="gauge-bg" cx="100" cy="100" r="80" />
+                    <circle class="gauge-fill" id="gaugeFill" cx="100" cy="100" r="80" />
+                  </svg>
+                  <div class="gauge-inner">
+                    <div class="gauge-score" id="gaugeScore">—</div>
+                    <div class="gauge-label" id="gaugeLabel">—</div>
+                  </div>
+                </div>
+              </div>
+              <button class="btn-ghost btn-sm" id="whyScoreBtn" style="margin:0 auto 8px;display:block;">Why this score? ▼</button>
+              <div class="score-breakdown hidden" id="scoreBreakdown"></div>
+            </div>
+
+            <!-- Incident Type -->
+            <div class="panel metric-panel">
+              <div class="metric-label">Incident Type <span class="src-tag ml">ML</span></div>
+              <div class="metric-value" id="typeValue">—</div>
+              <div class="metric-conf" id="typeConf"></div>
+            </div>
+
+            <!-- Severity -->
+            <div class="panel metric-panel">
+              <div class="metric-label">Severity <span class="src-tag ml">ML</span></div>
+              <div class="metric-value" id="sevValue">—</div>
+              <div class="metric-conf" id="sevConf"></div>
+            </div>
+
+            <!-- Campaign Status -->
+            <div class="panel metric-panel">
+              <div class="metric-label">Campaign Status</div>
+              <div class="metric-value" id="campaignStatus">—</div>
+              <div class="metric-conf" id="campaignStatusSub"></div>
+            </div>
+          </div>
+
+          <!-- Summary -->
+          <div class="panel">
+            <div class="panel-head"><h3>Incident Summary <span class="src-tag" id="summarySrc">—</span></h3></div>
+            <p class="body-text" id="summaryText">—</p>
+          </div>
+
+          <!-- IoC + Entities -->
+          <div class="two-col">
+            <div class="panel">
+              <div class="panel-head"><h3>Extracted IoCs <span class="src-tag rule">Rule-based</span></h3></div>
+              <div id="iocList" class="ioc-cards"></div>
+            </div>
+            <div class="panel">
+              <div class="panel-head"><h3>Extracted Entities <span class="src-tag rule">Lightweight NER</span></h3></div>
+              <div id="entityList" class="chip-groups"></div>
+            </div>
+          </div>
+
+          <!-- Correlations -->
+          <div class="panel">
+            <div class="panel-head"><h3>Cross-Incident Correlations <span class="src-tag rule">Correlation Engine</span></h3></div>
+            <div id="correlationList" class="correlation-list"></div>
+          </div>
+
+          <!-- Similar Incidents -->
+          <div class="panel">
+            <div class="panel-head"><h3>Related Incidents <span class="src-tag rule">TF-IDF Similarity</span></h3></div>
+            <div id="similarList" class="similar-list"></div>
+          </div>
+
+          <!-- XAI -->
+          <div class="panel">
+            <div class="panel-head"><h3>Explainable AI <span class="src-tag ml">ML</span></h3></div>
+            <p class="panel-note">Top words driving the incident-type prediction (TF-IDF weight × model coefficient).</p>
+            <div id="xaiBars" class="xai-bars"></div>
+          </div>
+
+          <!-- Mitigation -->
+          <div class="panel">
+            <div class="panel-head"><h3>Mitigation Recommendations <span class="src-tag rule">Rule-based</span></h3></div>
+            <div id="mitigationBody" class="mitigation-grid"></div>
+            <div id="llmNarrative" class="llm-narrative hidden">
+              <div class="src-tag llm">LLM-generated</div>
+              <p id="llmNarrativeText"></p>
+            </div>
+          </div>
+
+          <!-- Knowledge Graph -->
+          <div class="panel">
+            <div class="panel-head">
+              <h3>Knowledge Graph</h3>
+              <div class="graph-controls">
+                <button class="btn-ghost btn-sm" id="graphFit">Fit</button>
+                <button class="btn-ghost btn-sm" id="graphFullscreen">⛶</button>
+              </div>
+            </div>
+            <div id="graphContainer" class="graph-container"></div>
+          </div>
+
+          <!-- Final Report Panel -->
+          <div class="panel" id="finalReportPanel">
+            <div class="panel-head">
+              <h3>Final Intelligence Report</h3>
+              <div class="report-actions">
+                <button class="btn-secondary" id="generateReportBtn">Generate Report</button>
+                <button class="btn-primary" id="downloadPdfBtn">⬇ Download PDF Report</button>
+              </div>
+            </div>
+
+            <div id="finalReportBody" class="final-report hidden">
+              <div class="report-header">
+                <div>
+                  <span class="panel-note">CYBER THREAT INTELLIGENCE REPORT</span>
+                  <h2 id="reportTitle">—</h2>
+                </div>
+                <div class="report-id">ID: <span id="reportIncidentId">—</span></div>
+              </div>
+
+              <div class="report-grid">
+                <div class="report-card">
+                  <div class="metric-label">Incident Type</div>
+                  <div class="metric-value" id="reportIncidentType">—</div>
+                  <div id="reportIncidentConfidence" class="metric-conf"></div>
+                </div>
+                <div class="report-card">
+                  <div class="metric-label">Severity</div>
+                  <div class="metric-value" id="reportSeverity">—</div>
+                  <div id="reportSeverityConfidence" class="metric-conf"></div>
+                </div>
+                <div class="report-card">
+                  <div class="metric-label">Threat Score</div>
+                  <div class="metric-value" id="reportThreatScore">—</div>
+                  <div class="metric-conf" id="reportThreatClass"></div>
+                </div>
+              </div>
+
+              <div class="report-section">
+                <h4>Executive Summary</h4>
+                <p id="reportSummary">—</p>
+              </div>
+              <div class="report-section">
+                <h4>Indicators of Compromise</h4>
+                <div id="reportIocs" class="chip-groups"></div>
+              </div>
+              <div class="report-section">
+                <h4>Detected Entities</h4>
+                <div id="reportEntities" class="chip-groups"></div>
+              </div>
+              <div class="report-section">
+                <h4>Root Cause Indicators</h4>
+                <ul id="reportRootCause"></ul>
+              </div>
+              <div class="report-section">
+                <h4>Mitigation Recommendations</h4>
+                <div id="reportMitigation" class="mitigation-grid"></div>
+              </div>
+              <div class="report-section">
+                <h4>Explainable AI</h4>
+                <div id="reportXai"></div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /resultsArea -->
+      </div><!-- /analyze-layout -->
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <!-- VIEW: THREAT GRAPH                                                 -->
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <section class="view" id="view-graph">
+      <div class="view-header">
+        <h1 class="view-title">Threat Knowledge Graph</h1>
+        <p class="view-subtitle">Interactive cross-incident threat entity network</p>
+      </div>
+      <div class="panel" style="height:calc(100vh - 220px);">
+        <div class="panel-head">
+          <h3>Combined Threat Graph</h3>
+          <div class="graph-controls">
+            <select class="graph-filter" id="graphTypeFilter">
+              <option value="all">All Node Types</option>
+              <option value="incident">Incidents</option>
+              <option value="malware">Malware</option>
+              <option value="ip">IP Addresses</option>
+              <option value="domain">Domains</option>
+              <option value="cve">CVEs</option>
+            </select>
+            <button class="btn-ghost btn-sm" id="graphViewFit">Fit View</button>
+            <button class="btn-ghost btn-sm" id="graphViewFullscreen">⛶ Fullscreen</button>
+          </div>
+        </div>
+        <div id="graphViewContainer" class="graph-container" style="height:calc(100% - 60px);"></div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <!-- VIEW: ATTACK STORYLINE                                             -->
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <section class="view" id="view-storyline">
+      <div class="view-header">
+        <h1 class="view-title">Attack Storyline</h1>
+        <p class="view-subtitle">Visual attack journey mapped to MITRE ATT&amp;CK tactics</p>
+      </div>
+      <div class="panel">
+        <div class="panel-head">
+          <h3>Attack Chain Visualization</h3>
+          <span class="panel-note" id="storylineIncidentTitle">Analyze an incident to see its attack storyline</span>
+        </div>
+        <div id="storylineContainer" class="storyline-container">
+          <div class="storyline-empty">
+            <div class="empty-icon">⚡</div>
+            <div class="empty-title">No Storyline Generated Yet</div>
+            <div class="empty-sub">Analyze an incident report to generate an interactive attack storyline.</div>
+            <button class="btn-primary" onclick="navigateTo('analyze')">Go to Analyze Threat →</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <!-- VIEW: THREAT CAMPAIGNS                                             -->
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <section class="view" id="view-campaigns">
+      <div class="view-header">
+        <h1 class="view-title">Threat Campaigns</h1>
+        <p class="view-subtitle">Automatically detected coordinated attack campaigns</p>
+      </div>
+      <div id="campaignsList" class="campaigns-grid">
+        <div class="panel" style="grid-column:1/-1;">
+          <div class="storyline-empty">
+            <div class="empty-icon">🎯</div>
+            <div class="empty-title">No Campaigns Detected Yet</div>
+            <div class="empty-sub">Campaigns are detected when multiple incidents share common IoCs or entities. Analyze more incidents to enable correlation.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Campaign Detail Modal -->
+      <div class="modal-overlay hidden" id="campaignModal">
+        <div class="modal-panel">
+          <div class="modal-head">
+            <div>
+              <h2 id="modalCampaignName">—</h2>
+              <span class="modal-sub" id="modalCampaignSub">—</span>
+            </div>
+            <button class="modal-close" id="campaignModalClose">✕</button>
+          </div>
+          <div class="modal-body" id="campaignModalBody"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <!-- VIEW: INCIDENT HISTORY                                             -->
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <section class="view" id="view-history">
+      <div class="view-header">
+        <h1 class="view-title">Incident History</h1>
+        <p class="view-subtitle">All analyzed cyber incident reports</p>
+      </div>
+      <div class="panel">
+        <div class="panel-head">
+          <h3>Incident Records</h3>
+          <button class="btn-secondary" id="refreshHistory">↻ Refresh</button>
+        </div>
+        <div class="table-wrap">
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Type</th>
+                <th>Severity</th>
+                <th>Threat Score</th>
+                <th>Campaign</th>
+                <th>Date</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="historyBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <!-- VIEW: INTELLIGENCE REPORTS                                         -->
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <section class="view" id="view-reports">
+      <div class="view-header">
+        <h1 class="view-title">Intelligence Reports</h1>
+        <p class="view-subtitle">Generate and download comprehensive PDF reports</p>
+      </div>
+      <div class="panel">
+        <div class="panel-head">
+          <h3>Available Reports</h3>
+        </div>
+        <div id="reportsList" class="reports-list"></div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <!-- VIEW: MODEL PERFORMANCE & EVALUATION                               -->
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <section class="view" id="view-evaluation">
+      <div class="view-header">
+        <h1 class="view-title">Model Performance &amp; Evaluation</h1>
+        <p class="view-subtitle">Empirical evaluation results, independent out-of-distribution benchmark analysis, and algorithmic comparison matrix</p>
+      </div>
+
+      <!-- ── SECTION 3: METRIC SUMMARY CARDS ── -->
+      <div class="eval-section-heading">
+        <h2>Key Performance Metrics</h2>
+        <span class="panel-note">Verified results from in-distribution 80/20 holdout test and out-of-distribution independent benchmark</span>
+      </div>
+
+      <div class="eval-stat-grid" id="evalSummaryCards">
+        <!-- Card 1 -->
+        <div class="stat-card accent-score" id="stat-eval-type-holdout">
+          <div class="stat-icon">🎯</div>
+          <div class="stat-body">
+            <div class="stat-value">100%</div>
+            <div class="stat-label">Incident Classification</div>
+            <div class="eval-stat-sub">Holdout Accuracy (80/20 Test)</div>
+          </div>
+          <div class="stat-glow"></div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="stat-card accent-ioc" id="stat-eval-type-independent">
+          <div class="stat-icon">🌐</div>
+          <div class="stat-body">
+            <div class="stat-value">72.22%</div>
+            <div class="stat-label">Incident Classification</div>
+            <div class="eval-stat-sub">Independent Accuracy (18 Reports)</div>
+          </div>
+          <div class="stat-glow"></div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="stat-card accent-critical" id="stat-eval-sev-holdout">
+          <div class="stat-icon">🚨</div>
+          <div class="stat-body">
+            <div class="stat-value">100%</div>
+            <div class="stat-label">Severity Prediction</div>
+            <div class="eval-stat-sub">Holdout Accuracy (80/20 Test)</div>
+          </div>
+          <div class="stat-glow"></div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="stat-card accent-campaign" id="stat-eval-sev-independent">
+          <div class="stat-icon">📉</div>
+          <div class="stat-body">
+            <div class="stat-value">33.33%</div>
+            <div class="stat-label">Severity Prediction</div>
+            <div class="eval-stat-sub">Independent Accuracy (18 Reports)</div>
+          </div>
+          <div class="stat-glow"></div>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="stat-card accent-ioc" id="stat-eval-type-f1">
+          <div class="stat-icon">⚖</div>
+          <div class="stat-body">
+            <div class="stat-value">0.71</div>
+            <div class="stat-label">Incident Classification</div>
+            <div class="eval-stat-sub">Independent Macro F1 (18 Reports)</div>
+          </div>
+          <div class="stat-glow"></div>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="stat-card accent-critical" id="stat-eval-sev-f1">
+          <div class="stat-icon">📊</div>
+          <div class="stat-body">
+            <div class="stat-value">0.20</div>
+            <div class="stat-label">Severity Prediction</div>
+            <div class="eval-stat-sub">Independent Macro F1 (18 Reports)</div>
+          </div>
+          <div class="stat-glow"></div>
+        </div>
+      </div>
+
+      <!-- Metric Explanation Cards -->
+      <div class="panel eval-metric-desc-panel">
+        <div class="eval-metric-desc-grid">
+          <div class="eval-metric-desc-col">
+            <div class="eval-metric-title"><span class="badge">Accuracy Definition</span> What does Accuracy measure?</div>
+            <p class="body-text">Accuracy measures the overall proportion of correct classifications over all predictions: (TP + TN) / Total. While high accuracy indicates strong consistency on familiar patterns, it can be artificially elevated when test data mirrors training phrasing or when classes are imbalanced.</p>
+          </div>
+          <div class="eval-metric-desc-col">
+            <div class="eval-metric-title"><span class="badge">Macro F1 Definition</span> What does Macro F1 measure?</div>
+            <p class="body-text">Macro F1 is the unweighted arithmetic mean of F1-scores across every class: (1/K) &Sigma; F1_i. It gives equal importance to all incident types and severity levels regardless of sample count, penalizing models that fail on rare or difficult attack classes.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SECTION 2: EXISTING MODEL RESULTS COMPARISON TABLE ── -->
+      <div class="panel" style="margin-top:4px;">
+        <div class="panel-head">
+          <div>
+            <h3>Empirical Model Comparison Matrix</h3>
+            <span class="panel-note">Comparative evaluation using verified results from the CIRIP evaluation report</span>
+          </div>
+          <span class="badge">10 Algorithms Matrix</span>
+        </div>
+
+        <!-- Warning & Note Callout Banners -->
+        <div class="eval-notice-box warning">
+          <div class="eval-notice-icon">⚠</div>
+          <div class="eval-notice-text">
+            <strong>Synthetic Template Caveat:</strong> The 100% holdout scores are affected by repeated synthetic sentence templates in the generated training dataset (12 base templates across 180 records). They reflect in-distribution consistency on structured sentence patterns and <em>should not be interpreted as real-world accuracy</em>. Real-world generalization is reflected in the independent benchmark.
+          </div>
+        </div>
+
+        <div class="eval-notice-box info" style="margin-top:8px;margin-bottom:14px;">
+          <div class="eval-notice-icon">ℹ</div>
+          <div class="eval-notice-text">
+            <strong>Sample Size Note:</strong> The independent benchmark contains exactly <strong>18 diverse, unseen cyber incident reports</strong> with novel terminology from CERT advisories, real threat feeds, and emerging attack campaigns (3 reports per incident type).
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table class="history-table eval-table">
+            <thead>
+              <tr>
+                <th style="min-width:280px;">Model / Task</th>
+                <th>Holdout Accuracy<br><span class="th-sub">(80/20 Stratified Split)</span></th>
+                <th>Independent Accuracy<br><span class="th-sub">(18 Diverse Reports)</span></th>
+                <th>Independent Macro F1<br><span class="th-sub">(18 Diverse Reports)</span></th>
+                <th>Platform Status</th>
+              </tr>
+            </thead>
+            <tbody id="evalComparisonTableBody">
+              <tr>
+                <td><strong>Logistic Regression — Incident Classification</strong></td>
+                <td><span class="eval-score-highlight green">100%</span></td>
+                <td><span class="eval-score-highlight cyan">72.22%</span></td>
+                <td><span class="eval-score-highlight purple">0.71</span></td>
+                <td><span class="badge">Active &amp; Evaluated</span></td>
+              </tr>
+              <tr>
+                <td><strong>Logistic Regression — Severity Prediction</strong></td>
+                <td><span class="eval-score-highlight green">100%</span></td>
+                <td><span class="eval-score-highlight orange">33.33%</span></td>
+                <td><span class="eval-score-highlight red">0.20</span></td>
+                <td><span class="badge">Active &amp; Evaluated</span></td>
+              </tr>
+              <tr>
+                <td>Naive Bayes</td>
+                <td><span class="badge badge-muted">Not evaluated</span></td>
+                <td><span class="badge badge-muted">Not evaluated</span></td>
+                <td><span class="badge badge-muted">Not evaluated</span></td>
+                <td><span class="badge badge-muted">Not evaluated</span></td>
+              </tr>
+              <tr>
+                <td>Linear SVM</td>
+                <td><span class="badge badge-muted">Not evaluated</span></td>
+                <td><span class="badge badge-muted">Not evaluated</span></td>
+                <td><span class="badge badge-muted">Not evaluated</span></td>
+                <td><span class="badge badge-muted">Not evaluated</span></td>
+              </tr>
+              <tr>
+                <td>Random Forest</td>
+                <td><span class="badge badge-muted">Not evaluated</span></td>
+                <td><span class="badge badge-muted">Not evaluated</span></td>
+                <td><span class="badge badge-muted">Not evaluated</span></td>
+                <td><span class="badge badge-muted">Not evaluated</span></td>
+              </tr>
+              <tr>
+                <td>Decision Tree</td>
+                <td><span class="badge badge-muted">Not evaluated</span></td>
+                <td><span class="badge badge-muted">Not evaluated</span></td>
+                <td><span class="badge badge-muted">Not evaluated</span></td>
+                <td><span class="badge badge-muted">Not evaluated</span></td>
+              </tr>
+              <tr>
+                <td>K-Nearest Neighbors</td>
+                <td><span class="badge badge-muted">Not evaluated</span></td>
+                <td><span class="badge badge-muted">Not evaluated</span></td>
+                <td><span class="badge badge-muted">Not evaluated</span></td>
+                <td><span class="badge badge-muted">Not evaluated</span></td>
+              </tr>
+              <tr>
+                <td>Gradient Boosting</td>
+                <td><span class="badge badge-muted">Not evaluated</span></td>
+                <td><span class="badge badge-muted">Not evaluated</span></td>
+                <td><span class="badge badge-muted">Not evaluated</span></td>
+                <td><span class="badge badge-muted">Not evaluated</span></td>
+              </tr>
+              <tr>
+                <td>Neural Network</td>
+                <td><span class="badge badge-muted">Not evaluated</span></td>
+                <td><span class="badge badge-muted">Not evaluated</span></td>
+                <td><span class="badge badge-muted">Not evaluated</span></td>
+                <td><span class="badge badge-muted">Not evaluated</span></td>
+              </tr>
+              <tr>
+                <td>Transformer / BERT</td>
+                <td><span class="badge badge-muted">Not evaluated</span></td>
+                <td><span class="badge badge-muted">Not evaluated</span></td>
+                <td><span class="badge badge-muted">Not evaluated</span></td>
+                <td><span class="badge badge-muted">Not evaluated</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── SECTION 4: VISUAL COMPARISONS ── -->
+      <div class="two-col" style="margin-top:4px;">
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <h3>A. Holdout vs. Independent Accuracy</h3>
+              <p class="panel-note">Logistic Regression: In-Distribution (100%) vs. Out-of-Distribution (18 Reports)</p>
+            </div>
+            <span class="src-tag ml">Empirical Data</span>
+          </div>
+          <div class="chart-container" style="position:relative;height:240px;">
+            <canvas id="evalHoldoutVsIndependentChart"></canvas>
+          </div>
+          <div class="eval-chart-footnote">
+            Note: Demonstrates generalization gap. While synthetic holdout test achieved 100% due to repeated template phrasing, the independent benchmark achieved 72.22% on incident type and 33.33% on severity across 18 novel reports.
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <h3>B. Independent Macro F1: Type vs. Severity</h3>
+              <p class="panel-note">Logistic Regression: Incident Classification (0.71) vs. Severity Prediction (0.20)</p>
+            </div>
+            <span class="src-tag ml">Empirical Data</span>
+          </div>
+          <div class="chart-container" style="position:relative;height:240px;">
+            <canvas id="evalMacroF1Chart"></canvas>
+          </div>
+          <div class="eval-chart-footnote">
+            Note: Reflects balanced multi-class performance. Incident classification achieved 0.71 Macro F1 across 6 classes, whereas severity prediction scored 0.20 due to cross-severity vocabulary overlap and lack of numeric impact metrics.
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SECTION 5: ALGORITHM COMPARISON SECTION ── -->
+      <div class="panel" style="margin-top:4px;">
+        <div class="panel-head">
+          <div>
+            <h3>Algorithm Architecture &amp; Methodology Analysis</h3>
+            <p class="panel-note">Comparative analysis of text classification algorithms, advantages, and limitations for cybersecurity incident text</p>
+          </div>
+          <span class="badge">9 Architectures Reviewed</span>
+        </div>
+
+        <!-- Selection Rationale Notice -->
+        <div class="eval-notice-box info" style="margin-bottom:18px;">
+          <div class="eval-notice-icon">💡</div>
+          <div class="eval-notice-text">
+            <strong>Why Logistic Regression was selected for CIRIP:</strong> Logistic Regression was selected because it is lightweight, fast to train on normal laptops without GPU requirements, highly interpretable via linear coefficients (which directly power CIRIP's Explainable AI feature attribution), and well-suited for high-dimensional sparse TF-IDF text features. <em>It is not claimed to outperform all other algorithms</em> because they have not yet been benchmarked on this platform.
+          </div>
+        </div>
+
+        <div class="eval-algo-grid">
+          <!-- 1. Logistic Regression -->
+          <div class="eval-algo-card active-model">
+            <div class="eval-algo-head">
+              <div>
+                <div class="eval-algo-title">Logistic Regression</div>
+                <div class="eval-algo-type">Linear Probabilistic Classifier (TF-IDF + Softmax)</div>
+              </div>
+              <span class="badge">CIRIP Active Model</span>
+            </div>
+            <div class="eval-algo-body">
+              <div class="eval-algo-prop">
+                <span class="eval-algo-label">General Approach:</span>
+                <p>Models posterior class probabilities using a linear combination of normalized TF-IDF n-gram token weights passed through a logistic sigmoid / softmax function.</p>
+              </div>
+              <div class="eval-algo-prop">
+                <span class="eval-algo-label">Advantages for Text:</span>
+                <p>Extremely fast training and low latency inference; highly interpretable via feature weights (enables CIRIP's Explainable AI); convex loss guarantees global convergence; excels on sparse text vectors.</p>
+              </div>
+              <div class="eval-algo-prop">
+                <span class="eval-algo-label">Limitations for Text:</span>
+                <p>Linear decision boundaries cannot model non-linear word interactions; ignores word order and syntactic sequence; struggles with severity levels that share identical vocabulary across classes.</p>
+              </div>
+              <div class="eval-algo-status-bar">
+                <span>CIRIP Benchmark Status:</span>
+                <span class="eval-status-val evaluated">Evaluated (72.22% / 33.33% Indep. Acc)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. Multinomial Naive Bayes -->
+          <div class="eval-algo-card">
+            <div class="eval-algo-head">
+              <div>
+                <div class="eval-algo-title">Multinomial Naive Bayes</div>
+                <div class="eval-algo-type">Generative Frequency Classifier</div>
+              </div>
+              <span class="badge badge-muted">Not evaluated</span>
+            </div>
+            <div class="eval-algo-body">
+              <div class="eval-algo-prop">
+                <span class="eval-algo-label">General Approach:</span>
+                <p>Applies Bayes' theorem with the strong ("naive") assumption that all word features are conditionally independent given the incident category.</p>
+              </div>
+              <div class="eval-algo-prop">
+                <span class="eval-algo-label">Advantages for Text:</span>
+                <p>Fastest training and evaluation with negligible computational overhead; performs surprisingly well on small text datasets; naturally handles multi-class token counts.</p>
+              </div>
+              <div class="eval-algo-prop">
+                <span class="eval-algo-label">Limitations for Text:</span>
+                <p>Independence assumption is severely violated by correlated multi-word cybersecurity phrases (e.g., "privilege escalation", "credential harvesting"); sensitive to rare zero-frequency terms.</p>
+              </div>
+              <div class="eval-algo-status-bar">
+                <span>CIRIP Benchmark Status:</span>
+                <span class="eval-status-val">Not evaluated</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. Linear SVM -->
+          <div class="eval-algo-card">
+            <div class="eval-algo-head">
+              <div>
+                <div class="eval-algo-title">Linear Support Vector Machine (SVM)</div>
+                <div class="eval-algo-type">Maximum-Margin Hyperplane Classifier</div>
+              </div>
+              <span class="badge badge-muted">Not evaluated</span>
+            </div>
+            <div class="eval-algo-body">
+              <div class="eval-algo-prop">
+                <span class="eval-algo-label">General Approach:</span>
+                <p>Finds hyperplanes in the high-dimensional TF-IDF feature space that maximize the geometric margin between incident classes using Hinge loss regularization.</p>
+              </div>
+              <div class="eval-algo-prop">
+                <span class="eval-algo-label">Advantages for Text:</span>
+                <p>Renowned for exceptional performance in sparse high-dimensional text spaces; highly resistant to overfitting when feature count exceeds sample size; mathematically robust.</p>
+              </div>
+              <div class="eval-algo-prop">
+                <span class="eval-algo-label">Limitations for Text:</span>
+                <p>Does not natively produce calibrated probability estimates (requires Platt scaling); slower to train on multi-class One-vs-Rest corpora with large vocabularies.</p>
+              </div>
+              <div class="eval-algo-status-bar">
+                <span>CIRIP Benchmark Status:</span>
+                <span class="eval-status-val">Not evaluated</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. Random Forest -->
+          <div class="eval-algo-card">
+            <div class="eval-algo-head">
+              <div>
+                <div class="eval-algo-title">Random Forest</div>
+                <div class="eval-algo-type">Bagged Ensemble of Decision Trees</div>
+              </div>
+              <span class="badge badge-muted">Not evaluated</span>
+            </div>
+            <div class="eval-algo-body">
+              <div class="eval-algo-prop">
+                <span class="eval-algo-label">General Approach:</span>
+                <p>Constructs an ensemble of de-correlated decision trees on bootstrapped data samples with randomized feature subsets at each split node, aggregating predictions via majority vote.</p>
+              </div>
+              <div class="eval-algo-prop">
+                <span class="eval-algo-label">Advantages for Text:</span>
+                <p>Captures non-linear feature interactions and threshold patterns without manual feature scaling; substantially less prone to overfitting than individual decision trees.</p>
+              </div>
+              <div class="eval-algo-prop">
+                <span class="eval-algo-label">Limitations for Text:</span>
+                <p>In highly sparse TF-IDF text spaces, random feature sub-sampling frequently selects uninformative zero-weight features, degrading tree splits; higher memory and inference latency.</p>
+              </div>
+              <div class="eval-algo-status-bar">
+                <span>CIRIP Benchmark Status:</span>
+                <span class="eval-status-val">Not evaluated</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5. Decision Tree -->
+          <div class="eval-algo-card">
+            <div class="eval-algo-head">
+              <div>
+                <div class="eval-algo-title">Decision Tree</div>
+                <div class="eval-algo-type">Hierarchical Recursive Partitioning</div>
+              </div>
+              <span class="badge badge-muted">Not evaluated</span>
+            </div>
+            <div class="eval-algo-body">
+              <div class="eval-algo-prop">
+                <span class="eval-algo-label">General Approach:</span>
+                <p>Recursively partitions incident text feature vectors using greedy splits that maximize Information Gain or minimize Gini impurity.</p>
+              </div>
+              <div class="eval-algo-prop">
+                <span class="eval-algo-label">Advantages for Text:</span>
+                <p>Highly intuitive and visual decision rules; handles mixed attributes easily; rapid single-sample inference time.</p>
+              </div>
+              <div class="eval-algo-prop">
+                <span class="eval-algo-label">Limitations for Text:</span>
+                <p>Extreme propensity to overfit on high-dimensional text datasets; greedy orthogonal axis splits fail to capture nuanced vocabulary blends typical of security advisories.</p>
+              </div>
+              <div class="eval-algo-status-bar">
+                <span>CIRIP Benchmark Status:</span>
+                <span class="eval-status-val">Not evaluated</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 6. K-Nearest Neighbors -->
+          <div class="eval-algo-card">
+            <div class="eval-algo-head">
+              <div>
+                <div class="eval-algo-title">K-Nearest Neighbors (KNN)</div>
+                <div class="eval-algo-type">Instance-Based / Non-Parametric Memory Model</div>
+              </div>
+              <span class="badge badge-muted">Not evaluated</span>
+            </div>
+            <div class="eval-algo-body">
+              <div class="eval-algo-prop">
+                <span class="eval-algo-label">General Approach:</span>
+                <p>Stores all training vectors and classifies new reports by majority vote among the k closest training incidents using Cosine similarity or Euclidean distance.</p>
+              </div>
+              <div class="eval-algo-prop">
+                <span class="eval-algo-label">Advantages for Text:</span>
+                <p>Intuitive concept; zero training time overhead; dynamically incorporates new incident reports into the knowledge base without retraining.</p>
+              </div>
+              <div class="eval-algo-prop">
+                <span class="eval-algo-label">Limitations for Text:</span>
+                <p>Computationally demanding during live SOC inference (calculates distances against all historical reports); distance metrics degrade severely in high-dimensional sparse text (curse of dimensionality).</p>
+              </div>
+              <div class="eval-algo-status-bar">
+                <span>CIRIP Benchmark Status:</span>
+                <span class="eval-status-val">Not evaluated</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 7. Gradient Boosting -->
+          <div class="eval-algo-card">
+            <div class="eval-algo-head">
+              <div>
+                <div class="eval-algo-title">Gradient Boosting (XGBoost / LightGBM)</div>
+                <div class="eval-algo-type">Sequential Error-Correcting Ensemble</div>
+              </div>
+              <span class="badge badge-muted">Not evaluated</span>
+            </div>
+            <div class="eval-algo-body">
+              <div class="eval-algo-prop">
+                <span class="eval-algo-label">General Approach:</span>
+                <p>Sequentially trains shallow decision trees where each subsequent tree fits the negative pseudo-residuals of the loss function from previous iterations.</p>
+              </div>
+              <div class="eval-algo-prop">
+                <span class="eval-algo-label">Advantages for Text:</span>
+                <p>State-of-the-art predictive performance on structured feature spaces; strong regularizers (L1/L2); effective handling of class imbalance.</p>
+              </div>
+              <div class="eval-algo-prop">
+                <span class="eval-algo-label">Limitations for Text:</span>
+                <p>Significantly slower training on wide sparse n-gram matrices; sensitive to hyperparameter tuning (learning rate, depth); black-box nature requires external attribution models.</p>
+              </div>
+              <div class="eval-algo-status-bar">
+                <span>CIRIP Benchmark Status:</span>
+                <span class="eval-status-val">Not evaluated</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 8. Neural Network -->
+          <div class="eval-algo-card">
+            <div class="eval-algo-head">
+              <div>
+                <div class="eval-algo-title">Neural Network (Dense MLP)</div>
+                <div class="eval-algo-type">Multi-Layer Feedforward Perceptron</div>
+              </div>
+              <span class="badge badge-muted">Not evaluated</span>
+            </div>
+            <div class="eval-algo-body">
+              <div class="eval-algo-prop">
+                <span class="eval-algo-label">General Approach:</span>
+                <p>Maps TF-IDF vectors through stacked fully connected dense layers with non-linear activation functions (ReLU, GELU) trained via backpropagation and Adam optimization.</p>
+              </div>
+              <div class="eval-algo-prop">
+                <span class="eval-algo-label">Advantages for Text:</span>
+                <p>Learns non-linear representations and complex feature interactions; readily supports multi-task learning (simultaneously predicting incident type and severity).</p>
+              </div>
+              <div class="eval-algo-prop">
+                <span class="eval-algo-label">Limitations for Text:</span>
+                <p>Requires large volumes of labeled training data to prevent severe overfitting on synthetic templates; computationally heavier; black-box decision process.</p>
+              </div>
+              <div class="eval-algo-status-bar">
+                <span>CIRIP Benchmark Status:</span>
+                <span class="eval-status-val">Not evaluated</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 9. Transformer / BERT -->
+          <div class="eval-algo-card">
+            <div class="eval-algo-head">
+              <div>
+                <div class="eval-algo-title">Transformer / BERT (e.g., SecBERT)</div>
+                <div class="eval-algo-type">Bidirectional Self-Attention Language Model</div>
+              </div>
+              <span class="badge badge-muted">Not evaluated</span>
+            </div>
+            <div class="eval-algo-body">
+              <div class="eval-algo-prop">
+                <span class="eval-algo-label">General Approach:</span>
+                <p>Utilizes multi-head self-attention to process entire incident paragraphs bi-directionally, pre-trained on massive text corpora and fine-tuned on cybersecurity classification tasks.</p>
+              </div>
+              <div class="eval-algo-prop">
+                <span class="eval-algo-label">Advantages for Text:</span>
+                <p>Deep semantic understanding of attack context, acronyms, and sentence syntax; handles out-of-vocabulary terms via subword tokenization; state-of-the-art NLP accuracy.</p>
+              </div>
+              <div class="eval-algo-prop">
+                <span class="eval-algo-label">Limitations for Text:</span>
+                <p>Prohibitive compute and memory requirements (demands GPU acceleration for low-latency SOC throughput); large artifact footprint (~400MB+ vs &lt;1MB for TF-IDF); opaque decision pathways.</p>
+              </div>
+              <div class="eval-algo-status-bar">
+                <span>CIRIP Benchmark Status:</span>
+                <span class="eval-status-val">Not evaluated</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SECTION 6: METRIC EXPLANATIONS ── -->
+      <div class="panel" style="margin-top:4px;">
+        <div class="panel-head">
+          <div>
+            <h3>Evaluation Metric Explanations &amp; Cybersecurity Criticality</h3>
+            <p class="panel-note">Detailed mathematical definitions, operational interpretations, and analysis of why recall is paramount in security operations</p>
+          </div>
+          <span class="badge">6 Core Metrics</span>
+        </div>
+
+        <div class="eval-accordion-list">
+          <!-- Accordion 1: Accuracy -->
+          <details class="eval-accordion" open>
+            <summary class="eval-accordion-summary">
+              <div class="eval-accordion-title">
+                <span class="badge">Metric 1</span>
+                <strong>Accuracy</strong> — Proportion of Overall Correct Predictions
+              </div>
+              <span class="eval-accordion-icon">▼</span>
+            </summary>
+            <div class="eval-accordion-body">
+              <div class="eval-formula-box">
+                Formula: Accuracy = (True Positives + True Negatives) / (Total Predictions)
+              </div>
+              <p class="body-text">
+                Accuracy quantifies the percentage of incident reports whose labels were predicted correctly across all categories. In CIRIP, both models achieved 100% accuracy on the in-distribution 80/20 holdout split.
+              </p>
+              <div class="eval-soc-insight">
+                <strong>Cybersecurity Insight &amp; Pitfalls:</strong> Accuracy can be a dangerously misleading metric in cybersecurity. In production SOC environments, classes are severely imbalanced (e.g. 98% of alerts are benign while only 2% are true ransomware incursions). A trivial model predicting "benign" for every sample achieves 98% accuracy while failing to detect 100% of catastrophic attacks. Furthermore, on synthetic template datasets, high accuracy merely reflects memorization of sentence structures rather than genuine semantic detection.
+              </div>
+            </div>
+          </details>
+
+          <!-- Accordion 2: Precision -->
+          <details class="eval-accordion">
+            <summary class="eval-accordion-summary">
+              <div class="eval-accordion-title">
+                <span class="badge">Metric 2</span>
+                <strong>Precision</strong> — Positive Predictive Value (Alert Fidelity)
+              </div>
+              <span class="eval-accordion-icon">▼</span>
+            </summary>
+            <div class="eval-accordion-body">
+              <div class="eval-formula-box">
+                Formula: Precision = True Positives / (True Positives + False Positives)
+              </div>
+              <p class="body-text">
+                Precision answers: <em>"When the model flags an incident as Ransomware, how often is it actually Ransomware?"</em> In CIRIP's independent benchmark, incident classification achieved a Macro Precision of 0.78, with Phishing, Ransomware, and Insider Threat achieving 1.00 precision.
+              </p>
+              <div class="eval-soc-insight">
+                <strong>SOC Operational Impact:</strong> High precision prevents "alert fatigue." When a security tool generates numerous false positives (low precision), security analysts waste hours triaging non-incidents, eventually developing alert fatigue and potentially missing real breaches hidden among false alarms.
+              </div>
+            </div>
+          </details>
+
+          <!-- Accordion 3: Recall (CRITICAL FOR CYBERSECURITY) -->
+          <details class="eval-accordion" open>
+            <summary class="eval-accordion-summary">
+              <div class="eval-accordion-title">
+                <span class="badge" style="background:rgba(239,68,68,0.2);color:var(--critical);border-color:var(--critical);">Crucial Metric</span>
+                <strong>Recall (Sensitivity)</strong> — Detection Completeness &amp; Breach Coverage
+              </div>
+              <span class="eval-accordion-icon">▼</span>
+            </summary>
+            <div class="eval-accordion-body">
+              <div class="eval-formula-box">
+                Formula: Recall = True Positives / (True Positives + False Negatives)
+              </div>
+              <p class="body-text">
+                Recall answers: <em>"Out of all genuine security breaches that occurred, what fraction did the platform successfully identify?"</em> In CIRIP's independent benchmark, Phishing, Ransomware, and Data Breach achieved 100% recall (1.00), whereas Insider Threat and Malware achieved 33% recall (0.33) due to novel attack tooling phrases.
+              </p>
+              <div class="eval-soc-insight critical-focus">
+                <strong>Why Recall Matters Most in Cybersecurity:</strong>
+                <p>In cybersecurity, the cost of an error is deeply asymmetric. A <strong>False Positive</strong> causes minor analyst triage time (typically minutes to close an alert). In contrast, a <strong>False Negative</strong> (missing an ongoing ransomware deployment, APT persistence, or sensitive data exfiltration) can result in catastrophic financial loss, regulatory penalties (GDPR/HIPAA), operational shutdown, and reputational ruin.</p>
+                <p style="margin-top:6px;">Because missing a serious cybersecurity incident is vastly more expensive than investigating a false alarm, defensive machine learning pipelines are deliberately engineered and threshold-tuned to maximize <strong>Recall</strong> for high-severity threats.</p>
+              </div>
+            </div>
+          </details>
+
+          <!-- Accordion 4: Macro F1-Score -->
+          <details class="eval-accordion">
+            <summary class="eval-accordion-summary">
+              <div class="eval-accordion-title">
+                <span class="badge">Metric 4</span>
+                <strong>Macro F1-Score</strong> — Unweighted Multi-Class Balance Metric
+              </div>
+              <span class="eval-accordion-icon">▼</span>
+            </summary>
+            <div class="eval-accordion-body">
+              <div class="eval-formula-box">
+                Formula: Macro F1 = (1 / K) &Sigma; [2 &times; (Precision_i &times; Recall_i) / (Precision_i + Recall_i)]
+              </div>
+              <p class="body-text">
+                Macro F1 computes the harmonic mean of precision and recall for each individual class, and then takes the unweighted arithmetic mean across all K classes. In CIRIP's independent benchmark, Incident Classification achieved <strong>0.71 Macro F1</strong>, while Severity Prediction scored <strong>0.20 Macro F1</strong>.
+              </p>
+              <div class="eval-soc-insight">
+                <strong>Why Macro F1 is the Gold Standard for Evaluation:</strong> Because Macro F1 treats every class with equal weight regardless of how many test instances belong to it, a model cannot inflate its score by merely performing well on frequent, easy categories. If a model completely fails on rare classes like Insider Threat (F1 = 0), the Macro F1 drops sharply, providing an honest benchmark of model capability across the entire threat spectrum.
+              </div>
+            </div>
+          </details>
+
+          <!-- Accordion 5: Weighted F1-Score -->
+          <details class="eval-accordion">
+            <summary class="eval-accordion-summary">
+              <div class="eval-accordion-title">
+                <span class="badge">Metric 5</span>
+                <strong>Weighted F1-Score</strong> — Support-Weighted Aggregate F1
+              </div>
+              <span class="eval-accordion-icon">▼</span>
+            </summary>
+            <div class="eval-accordion-body">
+              <div class="eval-formula-box">
+                Formula: Weighted F1 = &Sigma; [(N_i / N_total) &times; F1_i]
+              </div>
+              <p class="body-text">
+                Weighted F1 weights each class's F1-score by its actual prevalence (support) in the evaluation dataset. In CIRIP's independent benchmark, Incident Classification achieved <strong>0.71 Weighted F1</strong>, while Severity Prediction achieved <strong>0.24 Weighted F1</strong>.
+              </p>
+              <div class="eval-soc-insight">
+                <strong>Operational Comparison:</strong> Weighted F1 reflects expected operational throughput on datasets where class distributions match real-world frequency. However, for benchmark evaluation, Macro F1 is preferred because Weighted F1 can mask poor detection of low-frequency, high-impact incidents.
+              </div>
+            </div>
+          </details>
+
+          <!-- Accordion 6: Confusion Matrix -->
+          <details class="eval-accordion">
+            <summary class="eval-accordion-summary">
+              <div class="eval-accordion-title">
+                <span class="badge">Metric 6</span>
+                <strong>Confusion Matrix</strong> — Detailed Error Distribution Breakdown
+              </div>
+              <span class="eval-accordion-icon">▼</span>
+            </summary>
+            <div class="eval-accordion-body">
+              <div class="eval-formula-box">
+                Structure: Rows = Ground-Truth Actual Class; Columns = Model-Predicted Class; Diagonal = Correct Predictions
+              </div>
+              <p class="body-text">
+                The confusion matrix provides a complete, granular view of specific misclassifications that summary statistics obscure.
+              </p>
+              <div class="eval-soc-insight">
+                <strong>CIRIP Independent Benchmark Diagnostic Insights:</strong>
+                <p>1. <strong>Incident Classification Matrix:</strong> Perfect classification (3/3 correct) was achieved for Phishing, Ransomware, and Data Breach. 1 DDoS report was misclassified as Data Breach, while Insider Threat and Malware had cross-class confusion with Data Breach due to shared references to data transfer and unauthorized access.</p>
+                <p style="margin-top:6px;">2. <strong>Severity Prediction Matrix:</strong> The confusion matrix exposes a significant <em>under-prediction bias</em>: 4 out of 5 Critical incidents and all 6 High incidents were classified as Medium. This occurred because the synthetic training set has a high proportion of Medium samples (43.3%) and the independent reports used novel impact descriptions without explicit severity keywords.</p>
+              </div>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <!-- VIEW: SETTINGS                                                     -->
+    <!-- ══════════════════════════════════════════════════════════════════ -->
+    <section class="view" id="view-settings">
+      <div class="view-header">
+        <h1 class="view-title">System Settings</h1>
+        <p class="view-subtitle">Platform configuration and status</p>
+      </div>
+      <div class="settings-grid">
+        <div class="panel">
+          <div class="panel-head"><h3>System Status</h3></div>
+          <div id="settingsStatus" class="settings-status-list"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h3>About CIRIP</h3></div>
+          <div class="about-body">
+            <div class="about-logo">◆ CIRIP</div>
+            <div class="about-version">Version 2.0 — AI-Powered Cyber Threat Fusion & Intelligence Platform</div>
+            <p class="body-text">Academic demonstration project. All ML predictions, rule-based extractions, and inferred relationships are clearly labeled. Not intended as a production SOC tool.</p>
+            <div class="tech-tags">
+              <span class="tech-tag">Python</span>
+              <span class="tech-tag">FastAPI</span>
+              <span class="tech-tag">Scikit-learn</span>
+              <span class="tech-tag">TF-IDF</span>
+              <span class="tech-tag">NetworkX</span>
+              <span class="tech-tag">ReportLab</span>
+              <span class="tech-tag">Chart.js</span>
+              <span class="tech-tag">vis-network</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- Fullscreen graph overlay -->
+<div class="fullscreen-overlay hidden" id="fullscreenOverlay">
+  <div class="fullscreen-head">
+    <h3 id="fullscreenTitle">Threat Graph</h3>
+    <button class="modal-close" id="fullscreenClose">✕</button>
+  </div>
+  <div id="fullscreenGraph" style="width:100%;height:calc(100% - 60px);"></div>
+</div>
+
+<!-- Toast Notifications -->
+<div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
