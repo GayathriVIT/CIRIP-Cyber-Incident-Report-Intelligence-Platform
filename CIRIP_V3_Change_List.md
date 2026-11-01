@@ -1,0 +1,9 @@
+# v2 -> v3 targeted corrections (37 pages, structure unchanged)
+
+1. **Baseline wording.** Abstract (p. 2) and conclusion (p. 35): "no better than a majority-class guess" replaced by "equal to a constant-class baseline because Medium and High each have six benchmark reports". Section 14.1 aligned to the same tied-class wording. Sections 9.4 and 10.5 already stated the tie.
+2. **Ref. [5] TTPXHunter.** Now the published ACM Digital Threats: Research and Practice paper: vol. 5, no. 4, Art. 37, pp. 1-19, Dec. 2024, doi 10.1145/3696427. Verified on the ACM Digital Library listing.
+3. **Ref. [10] Hanks et al.** Published title "Recognizing and Extracting Cybersecurity Entities from Text", Workshop on Machine Learning for Cybersecurity, ICML 2022 (Baltimore, PMLR 162); arXiv:2208.01693 kept as an additional identifier. Page numbers were not verifiable and are omitted. In-text wording ("cybersecurity entities") aligned.
+4. **Audit discrepancies kept unchanged:** macro-F1 0.7136/0.1989 vs 0.7056/0.1970; 15 vs 16 Medium predictions; stop-word count 128 vs 101 distinct; T8 incomplete IPv6.
+5. **T8 defect made visible** in four places: red "Known defect (T8)" boxes in Section 6.6 (IoC extraction), Section 12.2 (after the test table) and Section 14.1 (limitations); the T8 table row now reads "PASS (with defect)" with the recorded output; the test summary and conclusion mention it. The audit's PASS status is not altered.
+6. **Nothing invented:** no new author confirmations, contribution figures, provenance, hardware, screenshots or links. All earlier "Author confirmation required" notes remain.
+7. **Checks run:** figures 1-22 and tables I-XX sequential; equations (1)-(11) present; 19 references all cited ([5] and [10] numbers unchanged); no unresolved cross-references; abstract 184 words; section start pages unchanged except Section 16 (p. 35 -> 36) because of the added defect boxes; DOCX converted to PDF from the same source.
